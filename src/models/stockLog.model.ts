@@ -12,6 +12,10 @@ export interface StockLogAttributes {
     quantity: number;
     action: 'in' | 'out';
     createdAt?: Date;
+
+    User?: User;
+    Drink?: Drink;
+    StorageLocation?: StorageLocation;
 }
 
 class StockLog extends Model<StockLogAttributes> implements StockLogAttributes {
@@ -22,6 +26,10 @@ class StockLog extends Model<StockLogAttributes> implements StockLogAttributes {
     public quantity!: number;
     public action!: 'in' | 'out';
     public readonly createdAt!: Date;
+
+    public User?: User;
+    public Drink?: Drink;
+    public StorageLocation?: StorageLocation;
 }
 
 StockLog.init(
