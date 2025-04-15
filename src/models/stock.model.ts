@@ -8,6 +8,7 @@ export interface StockAttributes {
     drinkId: number;
     storageLocationId: number;
     quantity: number;
+    threshold?: number;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -17,8 +18,13 @@ class Stock extends Model<StockAttributes> implements StockAttributes {
     public drinkId!: number;
     public storageLocationId!: number;
     public quantity!: number;
+    public threshold!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+
+    // Added these two manually so TypeScript knows they're included via `include`
+    public Drink?: Drink;
+    public StorageLocation?: StorageLocation;
 }
 
 Stock.init(
@@ -48,6 +54,11 @@ Stock.init(
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0
+        },
+        threshold: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 10
         }
     },
     {

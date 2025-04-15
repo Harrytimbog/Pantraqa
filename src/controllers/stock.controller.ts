@@ -6,6 +6,7 @@ import { AuthRequest } from '../../types/express';
 import Drink from '../models/drink.model';
 import StorageLocation from '../models/storageLocation.model';
 import StockLog from '../models/stockLog.model';
+import { Op, col } from 'sequelize';
 
 export const stockIn = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
@@ -22,7 +23,6 @@ export const stockIn = async (req: AuthRequest, res: Response): Promise<void> =>
             stock.quantity += quantity;
             await stock.save();
 
-            // Log update
             await StockLog.create({
                 userId: req.user?.id!,
                 drinkId,
@@ -33,9 +33,13 @@ export const stockIn = async (req: AuthRequest, res: Response): Promise<void> =>
 
             res.status(StatusCodes.OK).json({ message: 'Stock updated', stock });
         } else {
-            const newStock = await Stock.create({ drinkId, storageLocationId, quantity });
+            const newStock = await Stock.create({
+                drinkId,
+                storageLocationId,
+                quantity,
+                threshold: 10
+            });
 
-            // Log creation
             await StockLog.create({
                 userId: req.user?.id!,
                 drinkId,
@@ -93,7 +97,6 @@ export const stockOut = async (req: AuthRequest, res: Response): Promise<void> =
         stock.quantity -= quantity;
         await stock.save();
 
-        //  Log stock-out
         await StockLog.create({
             userId: req.user?.id!,
             drinkId,
@@ -102,12 +105,67 @@ export const stockOut = async (req: AuthRequest, res: Response): Promise<void> =
             action: 'out'
         });
 
+        res.status(StatusCodes.OK).json({ message: 'Stock removed successfully', stock });
+    } catch (err: any) {
+        logger.error('Stock-out error: ' + err.message);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Server error' });
+    }
+};
+
+export const getLowStockAlerts = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const lowStockItems = await Stock.findAll({
+            where: {
+                quantity: { [Op.lte]: col('threshold') }
+            },
+            include: [
+                { model: Drink, attributes: ['name', 'size'] },
+                { model: StorageLocation, attributes: ['name'] }
+            ],
+            order: [['quantity', 'ASC']]
+        });
+
+        const formatted = lowStockItems.map(item => ({
+            drink: item.Drink?.name,
+            size: item.Drink?.size,
+            location: item.StorageLocation?.name,
+            quantity: item.quantity,
+            threshold: item.threshold
+        }));
+
+        res.status(StatusCodes.OK).json({ alerts: formatted });
+    } catch (err: any) {
+        console.error('Low stock alert error:', err.message);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to fetch low stock alerts' });
+    }
+};
+
+export const updateStockThreshold = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const { threshold } = req.body;
+
+        if (!threshold || isNaN(threshold)) {
+            res.status(StatusCodes.BAD_REQUEST).json({ error: 'Valid threshold is required' });
+            return;
+        }
+
+        const stock = await Stock.findByPk(id);
+
+        if (!stock) {
+            res.status(StatusCodes.NOT_FOUND).json({ error: 'Stock not found' });
+            return;
+        }
+
+        stock.threshold = threshold;
+        await stock.save();
+
         res.status(StatusCodes.OK).json({
-            message: 'Stock removed successfully',
+            message: 'Threshold updated successfully',
             stock
         });
     } catch (err: any) {
-        logger.error('Stock-out error: ' + err.message);
+        logger.error('Threshold update error: ' + err.message);
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Server error' });
     }
 };
