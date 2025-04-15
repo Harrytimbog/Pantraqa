@@ -15,16 +15,16 @@ export const getAllStockLogs = async (req: Request, res: Response): Promise<void
             storageLocationId,
             action,
             dateFrom,
-            dateTo
+            dateTo,
+            page = '1',
+            limit = '20'
         } = req.query;
 
         const filters: any = {};
-
         if (userId) filters.userId = userId;
         if (drinkId) filters.drinkId = drinkId;
         if (storageLocationId) filters.storageLocationId = storageLocationId;
         if (action) filters.action = action;
-
         if (dateFrom || dateTo) {
             filters.createdAt = {
                 ...(dateFrom && { [Op.gte]: new Date(dateFrom as string) }),
@@ -32,19 +32,30 @@ export const getAllStockLogs = async (req: Request, res: Response): Promise<void
             };
         }
 
-        const logs = await StockLog.findAll({
+        const pageNumber = parseInt(page as string);
+        const pageSize = parseInt(limit as string);
+        const offset = (pageNumber - 1) * pageSize;
+
+        const { count, rows: logs } = await StockLog.findAndCountAll({
             where: filters,
             include: [
                 { model: User, attributes: ['id', 'email', 'role'] },
                 { model: Drink, attributes: ['id', 'name', 'size', 'category'] },
                 { model: StorageLocation, attributes: ['id', 'name', 'type'] }
             ],
-            order: [['createdAt', 'DESC']]
+            order: [['createdAt', 'DESC']],
+            limit: pageSize,
+            offset
         });
 
-        res.status(StatusCodes.OK).json({ logs });
+        res.status(StatusCodes.OK).json({
+            total: count,
+            totalPages: Math.ceil(count / pageSize),
+            currentPage: pageNumber,
+            logs
+        });
     } catch (err: any) {
-        logger.error('Fetch stock logs error: ' + err.message);
+        logger.error('Paginated log fetch error: ' + err.message);
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Server error' });
     }
 };
