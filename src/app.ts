@@ -11,6 +11,7 @@ import storageRoutes from './routes/storageLocation.routes';
 import stockRoutes from './routes/stock.routes';
 import stockLogRoutes from './routes/stockLog.routes';
 import dashboardRoutes from './routes/dashboard.routes';
+import logRoutes from './routes/log.routes';
 
 dotenv.config();
 
@@ -43,7 +44,7 @@ app.use('/api/v1/locations', storageRoutes);
 app.use('/api/v1/stocks', stockRoutes);
 app.use('/api/v1/stocklogs', stockLogRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
-
+app.use('/api/v1/logs', logRoutes);
 // Test route for authentication
 import testRoutes from './routes/auth.routes';
 
