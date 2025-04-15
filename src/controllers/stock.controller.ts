@@ -5,6 +5,7 @@ import Stock from '../models/stock.model';
 import { AuthRequest } from '../../types/express';
 import Drink from '../models/drink.model';
 import StorageLocation from '../models/storageLocation.model';
+import StockLog from '../models/stockLog.model';
 
 export const stockIn = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
@@ -15,17 +16,34 @@ export const stockIn = async (req: AuthRequest, res: Response): Promise<void> =>
             return;
         }
 
-        // Check if stock already exists
         const stock = await Stock.findOne({ where: { drinkId, storageLocationId } });
 
         if (stock) {
-            // Update quantity
             stock.quantity += quantity;
             await stock.save();
+
+            // Log update
+            await StockLog.create({
+                userId: req.user?.id!,
+                drinkId,
+                storageLocationId,
+                quantity,
+                action: 'in'
+            });
+
             res.status(StatusCodes.OK).json({ message: 'Stock updated', stock });
         } else {
-            // Create new stock record
             const newStock = await Stock.create({ drinkId, storageLocationId, quantity });
+
+            // Log creation
+            await StockLog.create({
+                userId: req.user?.id!,
+                drinkId,
+                storageLocationId,
+                quantity,
+                action: 'in'
+            });
+
             res.status(StatusCodes.CREATED).json({ message: 'Stock created', stock: newStock });
         }
     } catch (err: any) {
@@ -74,6 +92,15 @@ export const stockOut = async (req: AuthRequest, res: Response): Promise<void> =
 
         stock.quantity -= quantity;
         await stock.save();
+
+        //  Log stock-out
+        await StockLog.create({
+            userId: req.user?.id!,
+            drinkId,
+            storageLocationId,
+            quantity,
+            action: 'out'
+        });
 
         res.status(StatusCodes.OK).json({
             message: 'Stock removed successfully',
