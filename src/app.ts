@@ -8,6 +8,7 @@ import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
 import drinkRoutes from './routes/drink.routes';
 import storageRoutes from './routes/storageLocation.routes';
+import stockRoutes from './routes/stock.routes';
 
 dotenv.config();
 
@@ -37,7 +38,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/drinks', drinkRoutes);
 app.use('/api/v1/locations', storageRoutes);
-
+app.use('/api/v1/stocks', stockRoutes);
 
 // Test route for authentication
 import testRoutes from './routes/auth.routes';

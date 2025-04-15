@@ -7,6 +7,8 @@ import { logger } from './utils/logger';
 import './models/user.model';
 import './models/drink.model';
 import './models/storageLocation.model';
+import './models/stock.model';
+import './models/stockLog.model';
 
 const PORT = process.env.PORT || 5000;
 
