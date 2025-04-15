@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { logger, logMiddleware } from './utils/logger';
+import authRoutes from './routes/auth.routes';
+import userRoutes from './routes/user.routes';
 
 dotenv.config();
 
@@ -27,5 +29,14 @@ app.get('/', (req, res) => {
     logger.info('Root route accessed');
     res.send('🚀 Pantry Tracker API with TypeScript is Running!');
 });
+
+// Import routes
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/user', userRoutes);
+
+import testRoutes from './routes/auth.routes';
+
+app.use('/api/v1/test', testRoutes);
+
 
 export default app;
