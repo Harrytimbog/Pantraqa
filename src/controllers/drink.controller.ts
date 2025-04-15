@@ -30,3 +30,13 @@ export const createDrink = async (req: AuthRequest, res: Response): Promise<void
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Server error' });
     }
 };
+
+export const getAllDrinks = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const drinks = await Drink.findAll();
+        res.status(StatusCodes.OK).json({ drinks });
+    } catch (err: any) {
+        logger.error('Get drinks error: ' + err.message);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Server error' });
+    }
+};

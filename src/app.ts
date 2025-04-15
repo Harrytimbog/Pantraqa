@@ -7,6 +7,7 @@ import { logger, logMiddleware } from './utils/logger';
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
 import drinkRoutes from './routes/drink.routes';
+import storageRoutes from './routes/storageLocation.routes';
 
 dotenv.config();
 
@@ -35,8 +36,10 @@ app.get('/', (req, res) => {
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/drinks', drinkRoutes);
+app.use('/api/v1/locations', storageRoutes);
 
 
+// Test route for authentication
 import testRoutes from './routes/auth.routes';
 
 app.use('/api/v1/test', testRoutes);

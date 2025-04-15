@@ -6,6 +6,7 @@ import { logger } from './utils/logger';
 // This is important for associations and migrations
 import './models/user.model';
 import './models/drink.model';
+import './models/storageLocation.model';
 
 const PORT = process.env.PORT || 5000;
 
