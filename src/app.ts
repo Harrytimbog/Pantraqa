@@ -6,6 +6,7 @@ import rateLimit from 'express-rate-limit';
 import { logger, logMiddleware } from './utils/logger';
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
+import drinkRoutes from './routes/drink.routes';
 
 dotenv.config();
 
@@ -33,6 +34,8 @@ app.get('/', (req, res) => {
 // Import routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/drinks', drinkRoutes);
+
 
 import testRoutes from './routes/auth.routes';
 
