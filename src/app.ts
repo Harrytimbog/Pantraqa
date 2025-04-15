@@ -10,6 +10,7 @@ import drinkRoutes from './routes/drink.routes';
 import storageRoutes from './routes/storageLocation.routes';
 import stockRoutes from './routes/stock.routes';
 import stockLogRoutes from './routes/stockLog.routes';
+import dashboardRoutes from './routes/dashboard.routes';
 
 dotenv.config();
 
@@ -41,6 +42,7 @@ app.use('/api/v1/drinks', drinkRoutes);
 app.use('/api/v1/locations', storageRoutes);
 app.use('/api/v1/stocks', stockRoutes);
 app.use('/api/v1/stocklogs', stockLogRoutes);
+app.use('/api/v1/dashboard', dashboardRoutes);
 
 // Test route for authentication
 import testRoutes from './routes/auth.routes';
