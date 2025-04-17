@@ -4,6 +4,20 @@ import { StatusCodes } from 'http-status-codes';
 import StockLog from '../models/stockLog.model';
 import Drink from '../models/drink.model';
 import StorageLocation from '../models/storageLocation.model';
+import User from '../models/user.model';
+
+export const getUsers = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const users = await User.findAll({
+            attributes: ['id', 'email', 'role'], // Only select the fields needed
+        });
+
+        res.status(200).json(users);  // Send back users as JSON
+    } catch (err) {
+        console.error('Error fetching users:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
 
 export const getUserActivityLogs = async (req: Request, res: Response): Promise<void> => {
     try {
