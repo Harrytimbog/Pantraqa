@@ -58,15 +58,29 @@ export const stockIn = async (req: AuthRequest, res: Response): Promise<void> =>
 
 export const getAllStock = async (req: Request, res: Response): Promise<void> => {
     try {
-        const stock = await Stock.findAll({
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 10;
+        const offset = (page - 1) * limit;
+
+        const { count, rows: stocks } = await Stock.findAndCountAll({
             include: [
                 { model: Drink, attributes: ['name', 'size', 'category'] },
                 { model: StorageLocation, attributes: ['name', 'type'] }
             ],
-            order: [['storageLocationId', 'ASC'], ['drinkId', 'ASC']]
+            order: [['storageLocationId', 'ASC'], ['drinkId', 'ASC']],
+            limit,
+            offset
         });
 
-        res.status(StatusCodes.OK).json({ stock });
+        res.status(StatusCodes.OK).json({
+            stocks,
+            pagination: {
+                totalItems: count,
+                currentPage: page,
+                totalPages: Math.ceil(count / limit),
+                perPage: limit,
+            }
+        });
     } catch (err: any) {
         logger.error('Fetch stock error: ' + err.message);
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Server error' });
