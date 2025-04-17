@@ -6,7 +6,8 @@ import { onlyManager } from '../middleware/role.middleware';
 const router = Router();
 
 router.post('/out', validateToken, stockOut);
-router.post('/in', validateToken, onlyManager, stockIn);
+router.post('/in', validateToken, stockIn);
+// router.post('/in', validateToken, onlyManager, stockIn);
 router.get('/', getAllStock);
 router.get('/alerts', validateToken, getLowStockAlerts);
 // Only managers can update thresholds

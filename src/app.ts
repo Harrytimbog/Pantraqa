@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/drinks', drinkRoutes);
-app.use('/api/v1/locations', storageRoutes);
+app.use('/api/v1/storage-locations', storageRoutes);
 app.use('/api/v1/stocks', stockRoutes);
 app.use('/api/v1/stocklogs', stockLogRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);

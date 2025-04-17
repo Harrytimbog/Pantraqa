@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../src/app';
+import app from '../app';
 
 describe('Auth Routes', () => {
     it('should register a new user', async () => {
