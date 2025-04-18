@@ -71,7 +71,7 @@ export const getDashboardStats = async (req: Request, res: Response): Promise<vo
                 'userId',
                 [fn('COUNT', col('StockLog.id')), 'actionCount']
             ],
-            include: [{ model: User, attributes: ['email', 'role'] }],
+            include: [{ model: User, attributes: ['email', 'name', 'role'] }],
             where: { createdAt: { [Op.between]: [start, end] } },
             group: ['userId', 'User.id'],
             order: [[fn('COUNT', col('StockLog.id')), 'DESC']]

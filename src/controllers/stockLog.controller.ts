@@ -89,7 +89,7 @@ export const exportStockLogsCSV = async (req: Request, res: Response): Promise<v
         const logs = await StockLog.findAll({
             where: filters,
             include: [
-                { model: User, attributes: ['email'] },
+                { model: User, attributes: ['email', 'name'] },
                 { model: Drink, attributes: ['name', 'size', 'category'] },
                 { model: StorageLocation, attributes: ['name'] }
             ],
@@ -98,7 +98,7 @@ export const exportStockLogsCSV = async (req: Request, res: Response): Promise<v
 
         const formattedLogs = logs.map(log => ({
             date: log.createdAt.toISOString(),
-            user: log.User?.email,
+            user: `${log.User?.email} | (${log.User?.name})`,
             drink: `${log.Drink?.name} (${log.Drink?.size})`,
             category: log.Drink?.category,
             location: log.StorageLocation?.name,
@@ -144,7 +144,7 @@ export const exportStockLogsPDF = async (req: Request, res: Response): Promise<v
         const logs = await StockLog.findAll({
             where: filters,
             include: [
-                { model: User, attributes: ['email'] },
+                { model: User, attributes: ['name', 'name'] },
                 { model: Drink, attributes: ['name', 'size', 'category'] },
                 { model: StorageLocation, attributes: ['name'] }
             ],
@@ -187,7 +187,7 @@ export const exportStockLogsPDF = async (req: Request, res: Response): Promise<v
                 `${log.Drink?.name} (${log.Drink?.size})`,
                 log.quantity,
                 log.StorageLocation?.name,
-                log.User?.email
+                log.User?.name
             ];
 
             values.forEach((value, i) => {

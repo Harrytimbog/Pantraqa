@@ -4,6 +4,7 @@ import sequelize from '../config/database';
 export interface UserAttributes {
     id?: number;
     email: string;
+    name: string;
     password: string;
     role?: 'staff' | 'manager' | 'admin';
     createdAt?: Date;
@@ -13,6 +14,7 @@ export interface UserAttributes {
 class User extends Model<UserAttributes> implements UserAttributes {
     public id!: number;
     public email!: string;
+    public name!: string;
     public password!: string;
     public role!: 'staff' | 'manager' | 'admin';
     public readonly createdAt!: Date;
@@ -31,6 +33,11 @@ User.init(
             allowNull: false,
             unique: true,
             validate: { isEmail: true }
+        },
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: { notEmpty: true }
         },
         password: {
             type: DataTypes.STRING,

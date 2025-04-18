@@ -12,8 +12,24 @@ export const registerUser = async (
     res: Response
 ): Promise<void> => {
     try {
-        const { email, password, role } = req.body;
+        const { email, name, password, role } = req.body;
 
+        // Check if any required field is missing
+        const missingFields: string[] = [];
+        if (!email) missingFields.push('email');
+        if (!name) missingFields.push('name');
+        if (!password) missingFields.push('password');
+
+        // If there are missing fields, return an error with the list of missing fields
+        if (missingFields.length > 0) {
+            res.status(StatusCodes.BAD_REQUEST).json({ error: `${missingFields.join(', ')} field empty or not filled` });
+            return;
+        }
+
+        if (password.length < 6) {
+            res.status(StatusCodes.BAD_REQUEST).json({ error: 'Password must be at least 6 characters long' });
+            return;
+        }
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
             res.status(StatusCodes.BAD_REQUEST).json({ error: 'User already exists' });
@@ -21,11 +37,11 @@ export const registerUser = async (
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create({ email, password: hashedPassword, role });
+        const user = await User.create({ email, name, password: hashedPassword, role });
 
         res.status(StatusCodes.CREATED).json({
             message: 'User registered',
-            user: { id: user.id, email: user.email, role: user.role }
+            user: { id: user.id, email: user.email, name: user.name, role: user.role }
         });
     } catch (err: any) {
         logger.error('Register error: ' + err.message);
@@ -52,7 +68,7 @@ export const loginUser = async (
 
         res.status(StatusCodes.OK).json({
             token,
-            user: { id: user.id, email: user.email, role: user.role }
+            user: { id: user.id, email: user.email, name: user.name, role: user.role }
         });
     } catch (err: any) {
         logger.error('Login error: ' + err.message);
