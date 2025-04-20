@@ -13,3 +13,17 @@ export const onlyManager = (
         res.status(StatusCodes.FORBIDDEN).json({ message: 'Access denied' });
     }
 };
+
+
+export const onlyAdmin = (
+    req: AuthRequest,
+    res: Response,
+    next: NextFunction
+): void => {
+    console.log(req)
+    if (req.user?.role === 'admin') {
+        next();
+    } else {
+        res.status(StatusCodes.FORBIDDEN).json({ message: 'Access denied' });
+    }
+}

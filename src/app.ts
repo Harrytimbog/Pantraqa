@@ -12,6 +12,7 @@ import stockRoutes from './routes/stock.routes';
 import stockLogRoutes from './routes/stockLog.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import usersRoutes from './routes/users.routes';
+import adminRoutes from './routes/admin.routes';
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use('/api/v1/stocks', stockRoutes);
 app.use('/api/v1/stocklogs', stockLogRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/users', usersRoutes);
+app.use('/api/v1/admin', adminRoutes);
 // Test route for authentication
 import testRoutes from './routes/auth.routes';
 

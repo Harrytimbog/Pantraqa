@@ -27,7 +27,7 @@ export const createStorageLocation = async (req: AuthRequest, res: Response): Pr
         });
     } catch (err: any) {
         logger.error('Create storage location error: ' + err.message);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Server error' });
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Error creating storage location' });
     }
 };
 

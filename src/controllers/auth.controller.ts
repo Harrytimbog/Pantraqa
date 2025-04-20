@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import { StatusCodes } from 'http-status-codes';
 import User from '../models/user.model';
 import { logger } from '../utils/logger';
+import { body, validationResult } from 'express-validator';
+
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
@@ -13,7 +15,6 @@ export const registerUser = async (
 ): Promise<void> => {
     try {
         const { email, name, password, role } = req.body;
-
         // Check if any required field is missing
         const missingFields: string[] = [];
         if (!email) missingFields.push('email');
@@ -30,6 +31,16 @@ export const registerUser = async (
             res.status(StatusCodes.BAD_REQUEST).json({ error: 'Password must be at least 6 characters long' });
             return;
         }
+
+        await body('email').isEmail().normalizeEmail().run(req);
+        await body('name').isLength({ min: 3 }).run(req);
+        await body('password').isLength({ min: 6 }).run(req);
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array()[0].msg });
+        }
+
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
             res.status(StatusCodes.BAD_REQUEST).json({ error: 'User already exists' });

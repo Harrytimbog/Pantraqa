@@ -1,4 +1,5 @@
 *.env
 /node_modules
-logs/error.log
-logs/combined.loglogs/error.log
+# Log files
+logs/*.log
+logs/*.log
