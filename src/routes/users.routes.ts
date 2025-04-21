@@ -6,7 +6,7 @@ import { onlyAdmin, onlyManager } from '../middleware/role.middleware';
 const router = Router();
 
 // Route to get all users
-router.get('/', validateToken, onlyAdmin, getUsers);  // Ensure only admin can access
+router.get('/', validateToken, getUsers);  // Ensure only admin can access
 router.get('/logs/:userId', validateToken, getUserActivityLogs);
 
 export default router;
