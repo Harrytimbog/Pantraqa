@@ -9,6 +9,7 @@ import { Parser } from "json2csv";
 import User from "../models/user.model";
 import PDFDocument from "pdfkit";
 
+// Get all stock logs with pagination and filters
 export const getAllStockLogs = async (
   req: Request,
   res: Response
@@ -61,12 +62,11 @@ export const getAllStockLogs = async (
     });
   } catch (err: any) {
     logger.error("Paginated log fetch error: " + err.message);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Server error" });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Server error" });
   }
 };
 
+// Export stock logs to CSV
 export const exportStockLogsCSV = async (
   req: Request,
   res: Response
@@ -115,12 +115,11 @@ export const exportStockLogsCSV = async (
     res.send(csv);
   } catch (err: any) {
     logger.error("CSV export error: " + err.message);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Export failed" });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Export failed" });
   }
 };
 
+// Export stock logs to PDF
 export const exportStockLogsPDF = async (
   req: Request,
   res: Response
@@ -229,8 +228,6 @@ export const exportStockLogsPDF = async (
     doc.end();
   } catch (err: any) {
     logger.error("PDF export error: " + err.message);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Export to PDF failed" });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Export to PDF failed" });
   }
 };
