@@ -9,8 +9,8 @@ module.exports = {
     port: process.env.DB_PORT,
     dialect: 'postgres',
     migrationStorage: 'json',
-    migrations: ['src/migrations/*.ts'],  // Path to migrations folder
-    models: ['src/models']  // Path to models folder
+    migrations: ['dist/migrations/*.js'],  // Path to compiled migrations folder
+    models: ['dist/models']  // Path to compiled models folder
   },
   test: {
     username: process.env.DB_USER,
@@ -20,8 +20,8 @@ module.exports = {
     port: process.env.DB_PORT,
     dialect: 'postgres',
     migrationStorage: 'json',
-    migrations: ['src/migrations/*.ts'],
-    models: ['src/models']
+    migrations: ['dist/migrations/*.js'], // Path to compiled migrations folder
+    models: ['dist/models']  // Path to compiled models folder
   },
   production: {
     username: process.env.DB_USER,
@@ -31,7 +31,7 @@ module.exports = {
     port: process.env.DB_PORT,
     dialect: 'postgres',
     migrationStorage: 'json',
-    migrations: ['src/migrations/*.ts'],
-    models: ['src/models']
+    migrations: ['dist/migrations/*.js'], // Path to compiled migrations folder
+    models: ['dist/models']  // Path to compiled models folder
   }
 };
