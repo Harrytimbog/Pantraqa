@@ -7,6 +7,6 @@ const router = Router();
 
 router.post('/create-drink', validateToken, onlyManager, createDrink);
 router.get('/', getAllDrinks);
-router.delete('/:id', onlyManager, deleteDrink);
+router.delete('/:id', validateToken, onlyManager, deleteDrink);
 
 export default router;
